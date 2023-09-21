@@ -1,0 +1,25 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.line {
+
+    background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Vertical-wavy-line-test.svg/1200px-Vertical-wavy-line-test.svg.png);
+    background-color: red;
+    background-size: auto 90%;
+    background-repeat: repeat-x;
+    background-position: center 0;
+    height: 100%;
+    width: 100%;
+    animation: scroll-line linear 2s infinite;
+}
+
+@keyframes scroll-line {
+    from {
+        background-position: center 5%;
+    }
+    to {
+        background-position: center 100%;
+    }
+}
