@@ -3,18 +3,19 @@ package pl.coderslab.final_project.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.User;
 import pl.coderslab.final_project.service.UserRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-@Controller("/user")
+@Controller
+@RequestMapping("/user")
+@SessionAttributes("loggedUser")
 public class UserController {
     UserRepository userRepository;
 
@@ -22,41 +23,44 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("user/signUp")
-    public String insertData(@RequestParam Long id, Model model) {
-        User user;
-        if (id == 0) {
-            user = new User();
-        } else {
-            user = getUser(id);
-        }
+    @GetMapping("/signUp")
+    public String insertRegistrationData(Model model) {
+        User user = new User();
         model.addAttribute("user", user);
         return "user/signUp";
     }
 
-    @PostMapping("user/signUp")
-    public String processData(@Valid User user, BindingResult result, Model model) {
-        List<String> passwordMessages = checkPassword(user.getPassword());
+    @PostMapping("/signUp")
+    public String processRegistrationData(@Valid User user, BindingResult result, Model model, HttpServletRequest request) {
+        String password = user.getPassword();
+        String passwordMessage = checkPassword(password);
+        String emailMessage = checkEmail(user.getEmail());
         boolean isDataValid = true;
-        if (passwordMessages.size() != 0) {
-            model.addAttribute("passwordMessages", passwordMessages);
+        if (!passwordMessage.equals("")) {
+            model.addAttribute("passwordMessage", passwordMessage);
             isDataValid = false;
         }
-
+        if (emailMessage != null) {
+            model.addAttribute("emailMessage", emailMessage);
+            isDataValid = false;
+        }
         if (result.hasErrors()) {
             isDataValid = false;
         }
-
         if (!isDataValid) {
             return "user/signUp";
         }
 
         userRepository.save(user);
-        model.addAttribute("user", user);
-        return "user/details";
+        model.addAttribute("loggedUser", user);
+        return "redirect:..";
     }
 
-    private List<String> checkPassword(String password) {
+//    private String hashPassword(String password) {
+//        return BCrypt
+//    }
+
+    private String checkPassword(String password) {
         List<String> messages = new ArrayList<>();
         if (!findPattern("[A-Z]+", password)) {
             messages.add("Password must contains at least one upper case letter.");
@@ -70,7 +74,7 @@ public class UserController {
         if (!findPattern("[!@#$%^&*()_+\\-={}\\[\\]:\";'<>?,./]+", password)) {
             messages.add("Password must contains at least one special character.");
         }
-        return messages;
+        return String.join(" ", messages);
     }
 
     public static Boolean findPattern(String regex, String password) {
@@ -78,12 +82,15 @@ public class UserController {
         return compiledPattern.matcher(password).find();
     }
 
-    private Boolean checkEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
+    private String checkEmail(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            return "Email already exists.";
+        }
+        return null;
     }
 
-    private User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-    }
+//    private String insertLoginData(){
+//
+//    }
 
 }

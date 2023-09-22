@@ -22,7 +22,7 @@ public class User {
     @NotBlank
     @NotNull
     @Email
-//    @UniqueElements
+    @Column(unique = true)
     private String email;
     @NotBlank
     @NotNull
@@ -31,6 +31,8 @@ public class User {
     @OneToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
+    @Column(columnDefinition = "integer default 0")
+    private Integer admin=0;
 
     public Long getId() {
         return id;
@@ -78,5 +80,25 @@ public class User {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public Integer getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Integer admin) {
+        this.admin = admin;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", cart=" + cart +
+                '}';
     }
 }

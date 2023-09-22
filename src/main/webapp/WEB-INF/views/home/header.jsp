@@ -5,6 +5,8 @@
 <html lang="pl" data-bs-theme="auto">
 <head>
     <script src="/resources/assets/js/color-modes.js"></script>
+    <script src="/resources/js/login/app.js"></script>
+   <div class="hidden"> <c:out value="${sessionScope.name}"/></div>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,7 +41,8 @@
         }
 
         body {
-            background-image: url("/resources/images/pole-lawendowe.jpg");
+            /*background-image: url("/resources/images/pole-lawendowe.jpg");*/
+            background-image: url("/resources/images/pole-lawendowe-male.jpg");
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-size: cover;
@@ -278,6 +281,12 @@
             color: red;
             font-weight: bold;
         }
+        .footer-section{
+            background: var(--background-color);
+        }
+        .hidden {
+            visibility: hidden;
+        }
 
     </style>
 </head>
@@ -399,13 +408,13 @@
             <ul class="nav me-auto">
                 <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a>
                 </li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Wyroby ze sznurka</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Wyroby z włóczki</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Wyroby lawendowe</a></li>
+                <li class="nav-item"><a href="/product/rope" class="nav-link link-body-emphasis px-2">Wyroby ze sznurka</a></li>
+                <li class="nav-item"><a href="/product/wool" class="nav-link link-body-emphasis px-2">Wyroby z włóczki</a></li>
+                <li class="nav-item"><a href="/product/lavender" class="nav-link link-body-emphasis px-2">Wyroby lawendowe</a></li>
             </ul>
             <ul class="nav">
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Login</a></li>
-                <li class="nav-item"><a href="user/signUp?id=0" class="nav-link link-body-emphasis px-2">Sign up</a>
+                <li class="nav-item"><a href="/user/logIn" class="nav-link link-body-emphasis px-2">Login</a></li>
+                <li class="nav-item"><a href="/user/signUp" class="nav-link link-body-emphasis px-2">Sign up</a>
             </ul>
         </div>
     </nav>

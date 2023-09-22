@@ -27,4 +27,12 @@ public class Category {
     public void setName(String type) {
         this.name = type;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

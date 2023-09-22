@@ -21,4 +21,29 @@ public class CartOrder {
     public Long getId() {
         return id;
     }
+
+    public int getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(int orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    @Override
+    public String toString() {
+        return "CartOrder{" +
+                "id=" + id +
+                ", orderNumber=" + orderNumber +
+                ", cart=" + cart +
+                '}';
+    }
 }
