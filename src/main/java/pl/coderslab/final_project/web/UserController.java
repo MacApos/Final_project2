@@ -1,5 +1,6 @@
 package pl.coderslab.final_project.web;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -7,10 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.User;
 import pl.coderslab.final_project.service.UserRepository;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Controller
@@ -31,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/signUp")
-    public String processRegistrationData(@Valid User user, BindingResult result, Model model, HttpServletRequest request) {
+    public String processRegistrationData(@Valid User user, BindingResult result, Model model) {
         String password = user.getPassword();
         String passwordMessage = checkPassword(password);
         String emailMessage = checkEmail(user.getEmail());
@@ -50,15 +52,15 @@ public class UserController {
         if (!isDataValid) {
             return "user/signUp";
         }
-
+        user.setPassword(hashPassword(password));
         userRepository.save(user);
         model.addAttribute("loggedUser", user);
         return "redirect:..";
     }
 
-//    private String hashPassword(String password) {
-//        return BCrypt
-//    }
+    private String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
 
     private String checkPassword(String password) {
         List<String> messages = new ArrayList<>();
@@ -89,8 +91,37 @@ public class UserController {
         return null;
     }
 
-//    private String insertLoginData(){
-//
-//    }
+    @GetMapping("/login")
+    private String insertLoginData(Model model) {
+        model.addAttribute("user", new User());
+        return "user/login";
+    }
+
+    @PostMapping("/login")
+    public String processRegistrationData(User user, Model model) {
+        String email = user.getEmail();
+        String password = user.getPassword();
+        Optional<User> checkUser = userRepository.findByEmail(email);
+        User existingUser;
+        if (checkUser.isEmpty()) {
+            model.addAttribute("emailMessage", "Incorrect email");
+            return "user/login";
+        } else {
+            existingUser = checkUser.get();
+        }
+        if (!BCrypt.checkpw(password, existingUser.getPassword())) {
+            model.addAttribute("passwordMessage", "Incorrect password");
+            return "user/login";
+        }
+        model.addAttribute("loggedUser", existingUser);
+        return "redirect:..";
+    }
+
+    @RequestMapping("/userDetails")
+    public String processRegistrationData(HttpSession session, Model model) {
+        User showUser = (User) session.getAttribute("loggedUser");
+        model.addAttribute("showUser", showUser);
+        return "user/userDetails";
+    }
 
 }

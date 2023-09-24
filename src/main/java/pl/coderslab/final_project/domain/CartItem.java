@@ -1,15 +1,20 @@
 package pl.coderslab.final_project.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 @Entity
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int quantity;
+    @Column(columnDefinition = "integer default 1")
+    @Min(value = 1)
+    private Integer quantity=1;
     @ManyToOne
-    private Product products;
+    private Product product;
+    @ManyToOne
+    private Cart cart;
 
     public Long getId() {
         return id;
@@ -19,20 +24,28 @@ public class CartItem {
         this.id = id;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public Product getProducts() {
-        return products;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProducts(Product products) {
-        this.products = products;
+    public void setProduct(Product products) {
+        this.product = products;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     @Override
@@ -40,7 +53,8 @@ public class CartItem {
         return "CartItem{" +
                 "id=" + id +
                 ", quantity=" + quantity +
-                ", products=" + products +
+                ", products=" + product +
+                ", cart=" + cart +
                 '}';
     }
 }

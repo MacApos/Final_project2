@@ -2,13 +2,14 @@ package pl.coderslab.final_project.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import pl.coderslab.final_project.domain.CartItem;
 import pl.coderslab.final_project.domain.Product;
 import pl.coderslab.final_project.service.CategoryRepository;
 import pl.coderslab.final_project.service.ProductRepository;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -43,18 +44,20 @@ public class ProductController {
         return "product/allProducts";
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping ("/{id}")
     public String showProduct(@PathVariable("id") Long id, Model model) {
         try {
             Product product = productRepository.findById(id).orElseThrow(IllegalArgumentException::new);
             model.addAttribute("product", product);
+            model.addAttribute("cartItem", new CartItem());
             return "product/productDetails";
         } catch (IllegalArgumentException e){
             return "home/404";
         }
     }
 
-    @RequestMapping("/product/error")
+
+        @RequestMapping("/product/error")
     @ResponseBody
     public String productNotFound() {
         return "404";

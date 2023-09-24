@@ -1,16 +1,28 @@
 package pl.coderslab.final_project.domain;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime created;
-    @ManyToOne
-    private CartItem cartItem;
+    @CreationTimestamp
+    @Column(columnDefinition = "datetime default now()")
+    private Timestamp created;
+
+    @Min(value = 0)
+    @Column(columnDefinition = "integer default 0")
+    private Integer itemsQuantity=0;
+
+//    @OneToMany
+//    private List<CartItem> cartItems;
 
     public Long getId() {
         return id;
@@ -20,20 +32,12 @@ public class Cart {
         this.id = id;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 
-    public CartItem getCartItem() {
-        return cartItem;
-    }
-
-    public void setCartItem(CartItem cartItem) {
-        this.cartItem = cartItem;
+    public Timestamp getCreated() {
+        return created;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class Cart {
         return "Cart{" +
                 "id=" + id +
                 ", created=" + created +
-                ", cartItem=" + cartItem +
+                ", itemsQuantity=" + itemsQuantity +
                 '}';
     }
 }

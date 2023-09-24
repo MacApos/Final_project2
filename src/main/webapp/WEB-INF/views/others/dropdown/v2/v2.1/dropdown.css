@@ -1,0 +1,31 @@
+nav {
+    display: flex;
+}
+.dropdown-nav a:hover {
+    background-color: #2980b9;
+}
+.dropdown-nav:hover .dropdown_menu--animated {
+    display: block;
+}
+.dropdown_menu--animated {
+    display: none;
+}
+.dropdown_menu--animated a {
+    display: block;
+}
+.dropdown_menu--animated {
+    animation: growDown 0.6s ease-in-out forwards;
+    transform-origin: top center;
+}
+
+@keyframes growDown {
+    0% {
+        transform: scaleY(0);
+    }
+    80% {
+        transform: scaleY(1.1);
+    }
+    100% {
+        transform: scaleY(1);
+    }
+}

@@ -20,10 +20,10 @@ public class RequestResponseLoggingFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        HttpSession session = request.getSession();
-        if (session.getAttribute("admin") == null) {
-            session.setAttribute("admin", 0);
-        }
+//        HttpSession session = request.getSession();
+//        if (session.getAttribute("admin") == null) {
+//            session.setAttribute("admin", 0);
+//        }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

@@ -24,12 +24,6 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home(Model model, HttpSession session) {
-//        if(session.getAttribute("admin")==null){
-//            return "null";
-//        } else {
-//            model.addAttribute("admin", 0);
-//            return (String) session.getAttribute("admin");
-//        }
         return "home/home";
     }
 
