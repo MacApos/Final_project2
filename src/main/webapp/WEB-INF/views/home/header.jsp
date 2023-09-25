@@ -410,7 +410,7 @@
     <nav class="py-2 mb-4 bg-bd-tertiary border-bottom">
         <div class="container d-flex flex-wrap">
             <ul class="nav me-auto">
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a>
+                <li class="nav-item"><a href="/" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a>
                 </li>
                 <li class="nav-item"><a href="/product/rope" class="nav-link link-body-emphasis px-2">Wyroby ze
                     sznurka</a></li>
@@ -422,18 +422,21 @@
             <ul class="nav" id="logout">
                 <li class="nav-item"><a href="/user/login" class="nav-link link-body-emphasis px-2">Login</a></li>
                 <li class="nav-item"><a href="/user/signUp" class="nav-link link-body-emphasis px-2">Sign up</a></li>
+                <li class="nav-item"><div><a href="/cart/cartDetails" class="nav-link link-body-emphasis px-2">
+                    \_${sessionScope.cart.itemsQuantity}_/></a>
+            </div></li>
             </ul>
             <ul class="nav" id="login">
                 <li class="nav-item dropdown-nav no-arrow"><a class="nav-link link-body-emphasis px-2"
                                                               id="userName">${sessionScope.loggedUser.firstName}</a>
                     <div class="dropdown_menu--animated">
                         <a href="/user/userDetails">Profil</a>
-                        <a>Koszyk</a>
+                        <a href="/cart/cartDetails">Koszyk</a>
                         <a href="/logout">Wyloguj</a>
                     </div>
                 </li>
 
-                <li class="nav-item"><a href="/user/signUp" class="nav-link link-body-emphasis px-2">\_/</a></li>
+                <li class="nav-item"><a href="/cart/cartDetails" class="nav-link link-body-emphasis px-2">\_/</a></li>
             </ul>
         </div>
         <div id="session"><c:out value="${sessionScope.loggedUser}"/></div>

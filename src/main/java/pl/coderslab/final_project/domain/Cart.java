@@ -40,6 +40,14 @@ public class Cart {
         return created;
     }
 
+    public Integer getItemsQuantity() {
+        return itemsQuantity;
+    }
+
+    public void setItemsQuantity(Integer itemsQuantity) {
+        this.itemsQuantity = itemsQuantity;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +

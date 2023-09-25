@@ -23,7 +23,7 @@
         <div>Kategoria: ${product.category.name}</div>
         <form:form method="post" action="/cart/addToCart/${product.id}" modelAttribute="cartItem">
         <div>Liczba:
-            <form:input path="quantity" type="number" cssClass="form-control" placeholder="Podaj email"/>
+            <form:input path="quantity" type="number" cssClass="form-control" placeholder="Podaj liczbę artykułów"/>
             <form:errors path="quantity" element="div" cssClass="errorDiv"/>
         </div>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">

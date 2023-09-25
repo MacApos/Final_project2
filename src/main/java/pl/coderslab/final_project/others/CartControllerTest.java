@@ -1,9 +1,8 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.others;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
 import pl.coderslab.final_project.domain.Cart;
 import pl.coderslab.final_project.domain.CartItem;
 import pl.coderslab.final_project.domain.Product;
@@ -15,29 +14,28 @@ import pl.coderslab.final_project.service.UserRepository;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
-@RequestMapping("/cart")
-@SessionAttributes("cart")
-public class CartController {
+public class CartControllerTest {
     CartRepository cartRepository;
     ProductRepository productRepository;
     CartItemRepository cartItemRepository;
     UserRepository userRepository;
 
-    public CartController(CartRepository cartRepository, ProductRepository productRepository,
-                          CartItemRepository cartItemRepository, UserRepository userRepository) {
+    public CartControllerTest(CartRepository cartRepository, ProductRepository productRepository,
+                              CartItemRepository cartItemRepository, UserRepository userRepository) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.cartItemRepository = cartItemRepository;
         this.userRepository = userRepository;
     }
 
-    @RequestMapping("/addToCart/{productId}")
-    @ResponseBody
-    public String addToCart(@Valid CartItem cartItem, BindingResult result,
+
+    //    @RequestMapping("/addToCart/{productId}")
+//    @ResponseBody
+    public String addToCartTest(@Valid CartItem cartItem, BindingResult result,
                             @PathVariable("productId") Long productId, Model model, HttpSession session) {
         Product product = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
         if (result.hasErrors()) {
@@ -94,7 +92,6 @@ public class CartController {
             model.addAttribute("loggedUser", user);
         }
 
-        cart.setItemsQuantity(cart.getItemsQuantity() + cartItem.getQuantity());
         CartItem productInCart = cartItemRepository.findFirstByProductAndCart(product, cart).orElse(null);
         boolean isProductInCart = cartItemRepository.findFirstByProductAndCart(product, cart).isPresent();
 
@@ -105,8 +102,6 @@ public class CartController {
 
         cartItem.setCart(cart);
         cartItem.setProduct(product);
-
-        cartRepository.save(cart);
         cartItemRepository.save(cartItem);
 
         String message = "";
@@ -129,26 +124,6 @@ public class CartController {
         res.add("<a href=\"/\">Home</a>");
         res.add("Product in cart:" + isProductInCart);
         return res.stream().collect(Collectors.joining("<br>".repeat(2)));
-    }
-
-    @RequestMapping("/cartDetails")
-    public String showCart(HttpSession session, Model model) {
-        List<CartItem> cartItems;
-        LinkedHashMap<CartItem, Product> map = new LinkedHashMap<>();
-        if (session.getAttribute("cart") != null) {
-            Cart cart = (Cart) session.getAttribute("cart");
-            cartItems = cartItemRepository.findAllByCart(cart);
-            cartItems.forEach(cartItem -> map.put(cartItem,
-                    productRepository.findById(cartItem.getProduct().getId()).orElse(null)));
-        }
-        model.addAttribute("cartItems", map);
-        return "cart/cartDetails";
-    }
-
-    @PostMapping("/deleteFromCart")
-    public String deleteFromCart(@RequestParam("id") Long id) {
-        cartItemRepository.deleteById(id);
-        return "redirect:cartDetails";
     }
 
 }

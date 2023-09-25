@@ -8,16 +8,17 @@ import pl.coderslab.final_project.domain.Cart;
 import pl.coderslab.final_project.domain.CartItem;
 import pl.coderslab.final_project.domain.Product;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Modifying
     @Query("UPDATE CartItem ci SET ci.cart=?1 WHERE ci.cart=?2")
     void updateAllCartByCart(Cart newCart, Cart exisitngCart);
-
     List<CartItem> findAllByCart(Cart cart);
+    Optional<CartItem> findFirstByProductAndCart(Product product, Cart cart);
 
-    Optional<CartItem> findByProduct(Product product);
 }

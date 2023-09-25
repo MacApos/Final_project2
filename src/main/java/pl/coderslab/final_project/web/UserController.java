@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/signUp")
-    public String processRegistrationData(@Valid User user, BindingResult result, Model model) {
+    public String showUser(@Valid User user, BindingResult result, Model model) {
         String password = user.getPassword();
         String passwordMessage = checkPassword(password);
         String emailMessage = checkEmail(user.getEmail());
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String processRegistrationData(User user, Model model) {
+    public String showUser(User user, Model model) {
         String email = user.getEmail();
         String password = user.getPassword();
         Optional<User> checkUser = userRepository.findByEmail(email);
@@ -118,7 +118,7 @@ public class UserController {
     }
 
     @RequestMapping("/userDetails")
-    public String processRegistrationData(HttpSession session, Model model) {
+    public String showUser(HttpSession session, Model model) {
         User showUser = (User) session.getAttribute("loggedUser");
         model.addAttribute("showUser", showUser);
         return "user/userDetails";

@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.CartItem;
 import pl.coderslab.final_project.domain.Product;
+import pl.coderslab.final_project.service.CartItemRepository;
 import pl.coderslab.final_project.service.CategoryRepository;
 import pl.coderslab.final_project.service.ProductRepository;
 
@@ -17,10 +18,13 @@ import java.util.List;
 public class ProductController {
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
+    CartItemRepository cartItemRepository;
 
-    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository,
+                             CartItemRepository cartItemRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @RequestMapping("/rope")
@@ -44,32 +48,23 @@ public class ProductController {
         return "product/allProducts";
     }
 
-    @GetMapping ("/{id}")
+    @GetMapping("/{id}")
     public String showProduct(@PathVariable("id") Long id, Model model) {
         try {
             Product product = productRepository.findById(id).orElseThrow(IllegalArgumentException::new);
             model.addAttribute("product", product);
             model.addAttribute("cartItem", new CartItem());
             return "product/productDetails";
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return "home/404";
         }
     }
 
 
-        @RequestMapping("/product/error")
+    @RequestMapping("/product/error")
     @ResponseBody
     public String productNotFound() {
         return "404";
-    }
-
-    public Product getProduct(Long id) {
-        try {
-            return productRepository.findById(id).orElseThrow(() -> new Exception("No product found"));
-        } catch (Exception e) {
-            productNotFound();
-            return null;
-        }
     }
 }
 
