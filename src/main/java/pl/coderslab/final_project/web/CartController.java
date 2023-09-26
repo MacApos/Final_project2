@@ -46,59 +46,20 @@ public class CartController {
         }
         Cart cart = new Cart();
 
-        if (session.getAttribute("cart") == null &&
-                session.getAttribute("loggedUser") == null) {
-            cart = new Cart();
-
-        } else if (session.getAttribute("cart") == null &&
-                session.getAttribute("loggedUser") != null) {
+//        dodajesz produkt do koszyka
+        if (session.getAttribute("loggedUser") != null) {// jesteś zalogowany
             User user = (User) session.getAttribute("loggedUser");
-            if (user.getCart() == null) {
-                cart = new Cart();
-                cart = cartRepository.save(cart);
-                user.setCart(cart);
-                userRepository.save(user);
-                model.addAttribute("loggedUser", user);
-            } else {
-                cart = user.getCart();
+//            czy masz na koncie koszyk
+            Cart existingCart = cartRepository.findByUser(user).orElse(null);
+            if (existingCart == null) { //nie masz na koncie koszyka
+                cart.setUser(user);  // przypisujesz usera do aktualnego koszyka
+            } else { // masz na koncie koszyk
+                cart = existingCart; //ustawiasz aktualny koszyk na koszyk usera
             }
-
-        } else if (session.getAttribute("cart") != null &&
-                session.getAttribute("loggedUser") == null) {
-            cart = (Cart) session.getAttribute("cart");
-
-        } else if (session.getAttribute("cart") != null &&
-                session.getAttribute("loggedUser") != null) {
-            User user = (User) session.getAttribute("loggedUser");
-            cart = (Cart) session.getAttribute("cart");
-
-            if (user.getCart() != cart) {
-//                Cart oldCart = user.getCart();
-//                cartItemRepository.updateAllCartItemsOldCartToNewCart(cart, oldCart);
-//
-//                user.setCart(cart);
-//                userRepository.save(user);
-//                cartRepository.delete(oldCart);
-                Cart newCart = user.getCart();
-                cartItemRepository.updateAllCartItemsOldCartToNewCart(newCart, cart);
-
-                cartRepository.delete(cart);
-                cart = newCart;
-            }
-
-            else if (user.getCart() == null) {
-                user.setCart(cart);
-                user = userRepository.save(user);
-
-            } else {
-                Cart newCart = user.getCart();
-                cartItemRepository.updateAllCartItemsOldCartToNewCart(newCart, cart);
-
-                cartRepository.delete(cart);
-                cart = newCart;
-            }
-            model.addAttribute("loggedUser", user);
+        } else if (session.getAttribute("cart") != null) { //nie jesteś zalogowany i masz już produkty w koszyku
+            cart = (Cart) model.getAttribute("cart"); //ustawiasz aktualny koszyk na istniejący koszyk
         }
+        //nie jesteś zalogowany i nie masz produktów w koszyku - program działa dalej
 
         cart.setItemsQuantity(cart.getItemsQuantity() + cartItem.getQuantity());
         cartRepository.save(cart);
@@ -106,7 +67,8 @@ public class CartController {
         boolean isProductInCart = cartItemRepository.findFirstByProductAndCart(product, cart).isPresent();
 
         if (existingCartItem != null) {
-            cartItem.setQuantity(existingCartItem.getQuantity() + cartItem.getQuantity());
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + cartItem.getQuantity());
+            cartItem = existingCartItem;
         }
 
         cartItem.setCart(cart);
@@ -153,8 +115,7 @@ public class CartController {
     }
 
     @RequestMapping("/deleteFromCart")
-//    @ResponseBody
-    public void deleteFromCart(@RequestParam("id") Long id, Model model) {
+    public String deleteFromCart(@RequestParam("id") Long id, Model model) {
         CartItem cartItem = cartItemRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         Cart cart = cartRepository.findById(cartItem.getCart().getId())
                 .orElseThrow(IllegalArgumentException::new);
@@ -162,7 +123,7 @@ public class CartController {
         cartRepository.save(cart);
         model.addAttribute("cart", cart);
         cartItemRepository.deleteById(id);
-//        return "redirect:cartDetails";
+        return "redirect:cartDetails";
     }
 
 }

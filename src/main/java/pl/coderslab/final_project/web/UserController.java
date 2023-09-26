@@ -5,7 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.final_project.domain.Cart;
 import pl.coderslab.final_project.domain.User;
+import pl.coderslab.final_project.service.CartItemRepository;
+import pl.coderslab.final_project.service.CartRepository;
 import pl.coderslab.final_project.service.UserRepository;
 
 import javax.servlet.http.HttpSession;
@@ -17,12 +20,17 @@ import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/user")
-@SessionAttributes("loggedUser")
+@SessionAttributes({"loggedUser", "cart"})
 public class UserController {
     UserRepository userRepository;
+    CartRepository cartRepository;
+    CartItemRepository cartItemRepository;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, CartRepository cartRepository,
+                          CartItemRepository cartItemRepository) {
         this.userRepository = userRepository;
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @GetMapping("/signUp")
@@ -33,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/signUp")
-    public String showUser(@Valid User user, BindingResult result, Model model) {
+    public String procesLoginData(@Valid User user, BindingResult result, Model model) {
         String password = user.getPassword();
         String passwordMessage = checkPassword(password);
         String emailMessage = checkEmail(user.getEmail());
@@ -98,22 +106,53 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String showUser(User user, Model model) {
+    public String processLoginData(User user, Model model, HttpSession session) {
         String email = user.getEmail();
         String password = user.getPassword();
-        Optional<User> checkUser = userRepository.findByEmail(email);
+        user = userRepository.findByEmail(email).orElse(null);
         User existingUser;
-        if (checkUser.isEmpty()) {
+        if (user==null) {
             model.addAttribute("emailMessage", "Incorrect email");
             return "user/login";
-        } else {
-            existingUser = checkUser.get();
         }
-        if (!BCrypt.checkpw(password, existingUser.getPassword())) {
+
+        if (!BCrypt.checkpw(password, user.getPassword())) {
             model.addAttribute("passwordMessage", "Incorrect password");
             return "user/login";
         }
-        model.addAttribute("loggedUser", existingUser);
+        model.addAttribute("loggedUser", user);
+
+        Cart dbCart = cartRepository.findByUser(user).orElse(null);
+        if (session.getAttribute("cart") != null &&
+                dbCart != null) {
+            Cart sessCart = (Cart) session.getAttribute("cart");
+
+            if (sessCart.getUser() == null) {
+                dbCart.setItemsQuantity(dbCart.getItemsQuantity() + sessCart.getItemsQuantity());
+                cartItemRepository.updateAllCartItemsOldCartToNewCart(dbCart, sessCart);
+                if (cartRepository.findById(sessCart.getId()).isPresent()) {
+                    cartRepository.delete(sessCart);
+                }
+                cartRepository.save(dbCart);
+                model.addAttribute("cart", dbCart);
+            }
+
+        }
+        if (session.getAttribute("cart") != null &&
+                dbCart == null) {
+            Cart sessCart = (Cart) session.getAttribute("cart");
+            if (sessCart.getUser() == null) {
+                sessCart.setUser(user);
+                cartRepository.save(sessCart);
+                model.addAttribute("cart", sessCart);
+            }
+        }
+
+        if (session.getAttribute("cart") == null &&
+                dbCart != null) {
+            model.addAttribute("cart", dbCart);
+        }
+
         return "redirect:..";
     }
 

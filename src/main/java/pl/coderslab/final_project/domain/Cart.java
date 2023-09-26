@@ -21,8 +21,8 @@ public class Cart {
     @Column(columnDefinition = "integer default 0")
     private Integer itemsQuantity=0;
 
-//    @OneToMany
-//    private List<CartItem> cartItems;
+    @OneToOne
+    private User user;
 
     public Long getId() {
         return id;
@@ -48,12 +48,21 @@ public class Cart {
         this.itemsQuantity = itemsQuantity;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +
                 "id=" + id +
                 ", created=" + created +
                 ", itemsQuantity=" + itemsQuantity +
+                ", user=" + user +
                 '}';
     }
 }

@@ -28,9 +28,8 @@ public class User {
     @NotNull
     @Size(min = 8)
     private String password;
-    @OneToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+//    @OneToOne
+//    private Cart cart;
     @Column(columnDefinition = "integer default 0")
     private Integer admin=0;
 
@@ -74,13 +73,13 @@ public class User {
         this.password = password;
     }
 
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
+//    public Cart getCart() {
+//        return cart;
+//    }
+//
+//    public void setCart(Cart cart) {
+//        this.cart = cart;
+//    }
 
     public Integer getAdmin() {
         return admin;
@@ -98,7 +97,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", cart=" + cart +
+//                ", cart=" + cart +
                 ", admin=" + admin +
                 '}';
     }
