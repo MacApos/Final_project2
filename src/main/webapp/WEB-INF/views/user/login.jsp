@@ -4,7 +4,7 @@
 <jsp:include page="../home/header.jsp"/>
 
 <div class="container w-25 padding-small text-center">
-    <form:form method="post" modelAttribute="user">
+    <form:form method="post" action="${path}" modelAttribute="user">
         <h1>Logowanie</h1>
 
         <div class="form-group">

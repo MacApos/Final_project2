@@ -19,21 +19,19 @@
         <c:if test="${not empty product.scent}">
             <div>Zapach: ${product.scent}</div>
         </c:if>
+        <div> Cena: ${product.price} zł </div>
         <div>Rodzaj: ${product.type}</div>
         <div>Kategoria: ${product.category.name}</div>
-        <form:form method="post" action="/cart/addToCart/${product.id}" modelAttribute="cartItem">
-        <div>Liczba:
-            <form:input path="quantity" type="number" cssClass="form-control" placeholder="Podaj liczbę artykułów"/>
-            <form:errors path="quantity" element="div" cssClass="errorDiv"/>
-        </div>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <button class="w-50 btn btn-color" type="submit">Dodaj do koszyka</button>
+        <form:form method="post" action="/cart/${product.id}" modelAttribute="cartItem">
+            <div>Liczba:
+                <form:input path="quantity" type="number" cssClass="form-control" placeholder="Podaj liczbę artykułów"/>
+                <form:errors path="quantity" element="div" cssClass="errorDiv"/>
+            </div>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <button class="w-50 btn btn-color" type="submit" name="add">Dodaj do koszyka</button>
+                <button class="w-50 btn btn-color" type="submit" name="order">Zamów</button>
+            </div>
         </form:form>
-            <button class="w-50 btn btn-color" type="submit">Zamów</button>
-        </div>
-    </div>
-    <div>
-        ${product.price} zł
 
     </div>
 

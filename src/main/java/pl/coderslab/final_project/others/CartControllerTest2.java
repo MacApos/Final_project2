@@ -1,4 +1,4 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.others;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,17 +12,14 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Controller
-@RequestMapping("/cart")
-@SessionAttributes("cart")
-public class CartController {
+public class CartControllerTest2 {
     CartRepository cartRepository;
     ProductRepository productRepository;
     CartItemRepository cartItemRepository;
     UserRepository userRepository;
     CategoryRepository categoryRepository;
 
-    public CartController(CartRepository cartRepository, ProductRepository productRepository,
+    public CartControllerTest2(CartRepository cartRepository, ProductRepository productRepository,
                           CartItemRepository cartItemRepository, UserRepository userRepository,
                           CategoryRepository categoryRepository) {
         this.cartRepository = cartRepository;
@@ -33,38 +30,15 @@ public class CartController {
     }
 
     @RequestMapping(value = "/{productId}", params = "add")
-    public String add(@Valid CartItem cartItem, @PathVariable("productId") Long productId,
-                      BindingResult result, Model model, HttpSession session) {
+    public String addToCart(@Valid CartItem cartItem, BindingResult result,
+                            @PathVariable("productId") Long productId, Model model, HttpSession session) {
         Product product = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("product", product);
         if (result.hasErrors()) {
+            model.addAttribute("product", product);
             return "product/productDetails";
         }
-        addToCart(cartItem, product, model, session);
-        List<Product> allProducts = productRepository.findAllByCategoryId(product.getCategory().getId());
-        model.addAttribute("allProducts", allProducts);
-        return "product/productDetails";
-    }
-
-    @RequestMapping(value = "/{productId}", params = "order")
-    public String order(@Valid CartItem cartItem, @PathVariable("productId") Long productId,
-                        BindingResult result, Model model, HttpSession session) {
-        Product product = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("product", product);
-        if (result.hasErrors()) {
-            return "product/productDetails";
-        }
-        addToCart(cartItem, product, model, session);
-
-        if(session.getAttribute("user")==null){
-            return "redirect:../user/login?path=orderLogin";
-        }
-
-        return "order/orderDetails";
-    }
-
-    public void addToCart(CartItem cartItem, Product product, Model model, HttpSession session) {
         Cart cart = new Cart();
+
         // dodajesz produkt do koszyka
         if (session.getAttribute("loggedUser") != null) {// jesteś zalogowany
             User user = (User) session.getAttribute("loggedUser");
@@ -95,6 +69,10 @@ public class CartController {
         cartRepository.save(cart);
         cartItemRepository.save(cartItem);
         model.addAttribute("cart", cart);
+
+        List<Product> allProducts = productRepository.findAllByCategoryId(product.getCategory().getId());
+        model.addAttribute("allProducts", allProducts);
+        return "product/allProducts";
     }
 
     @RequestMapping("/cartDetails")
@@ -126,10 +104,10 @@ public class CartController {
         return "redirect:cartDetails";
     }
 
-//    @RequestMapping(value = "/{productId}", params = "order")
-//    @ResponseBody
-//    public String order(@Valid CartItem cartItem, BindingResult result,
-//                        @PathVariable("productId") Long productId, Model model, HttpSession session) {
+    @RequestMapping(value = "/{productId}", params = "order")
+    @ResponseBody
+    public String order(@Valid CartItem cartItem, BindingResult result,
+                        @PathVariable("productId") Long productId, Model model, HttpSession session) {
 //        Product product = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
 //        if (result.hasErrors()) {
 //            model.addAttribute("product", product);
@@ -140,9 +118,9 @@ public class CartController {
 //        if (session.getAttribute("cart") != null) { //nie jesteś zalogowany i masz już produkty w koszyku
 //            cart = (Cart) model.getAttribute("cart"); //ustawiasz aktualny koszyk na istniejący koszyk
 //        }
-//
-//
-//
-//        return "order";
-//    }
+
+
+
+        return "order";
+    }
 }

@@ -1,10 +1,12 @@
 package pl.coderslab.final_project.web;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.CartItem;
+import pl.coderslab.final_project.domain.Category;
 import pl.coderslab.final_project.domain.Product;
 import pl.coderslab.final_project.service.CartItemRepository;
 import pl.coderslab.final_project.service.CategoryRepository;
@@ -27,6 +29,10 @@ public class ProductController {
         this.cartItemRepository = cartItemRepository;
     }
 
+    public String removeAccentsWithApacheCommons(String input) {
+        return StringUtils.stripAccents(input);
+    }
+
     @RequestMapping("/rope")
     public String showRopeProducts(Model model) {
         List<Product> allProducts = productRepository.findAllByCategoryId(1L);
@@ -43,6 +49,9 @@ public class ProductController {
 
     @RequestMapping("/lavender")
     public String showLavenderProducts(Model model) {
+        Category category = categoryRepository.findById(1L).orElse(null);
+
+        category.getName();
         List<Product> allProducts = productRepository.findAllByCategoryId(3L);
         model.addAttribute("allProducts", allProducts);
         return "product/allProducts";

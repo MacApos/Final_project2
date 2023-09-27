@@ -36,5 +36,6 @@
                 </div>
             </div>
         </c:forEach>
+        Cena całkowita: ${totalPriceForCart} zł
     </c:otherwise>
 </c:choose>

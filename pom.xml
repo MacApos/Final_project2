@@ -12,7 +12,7 @@
     <artifactId>Final_project2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Final_project</name>
-    <description>Final_project</description>
+    <description>Final_project2</description>
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -64,6 +64,12 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -78,6 +84,14 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>15</source>
+                    <target>15</target>
                 </configuration>
             </plugin>
         </plugins>

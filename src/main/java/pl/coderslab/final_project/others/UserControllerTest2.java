@@ -1,10 +1,13 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.others;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import pl.coderslab.final_project.domain.Cart;
 import pl.coderslab.final_project.domain.User;
 import pl.coderslab.final_project.service.CartItemRepository;
@@ -15,19 +18,15 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
-@Controller
-@RequestMapping("/user")
-@SessionAttributes({"loggedUser", "cart"})
-public class UserController {
+public class UserControllerTest2 {
     UserRepository userRepository;
     CartRepository cartRepository;
     CartItemRepository cartItemRepository;
 
-    public UserController(UserRepository userRepository, CartRepository cartRepository,
-                          CartItemRepository cartItemRepository) {
+    public UserControllerTest2(UserRepository userRepository, CartRepository cartRepository,
+                               CartItemRepository cartItemRepository) {
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
@@ -100,23 +99,13 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    private String insertLoginData(@RequestParam(name="path", required=false) String path, Model model) {
+    private String insertLoginData(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("path", path);
         return "user/login";
     }
 
     @PostMapping("/login")
-    public String login(User user, Model model, HttpSession session) {
-        return processLoginData(user, model, session, "redirect..");
-    }
-
-    @RequestMapping(value = "/orderLogin")
-    public String loginAfterOrder(User user, Model model, HttpSession session) {
-        return processLoginData(user, model, session, "order/orderDetails");
-    }
-
-    public String processLoginData(User user, Model model, HttpSession session, String path) {
+    public String processLoginData(User user, Model model, HttpSession session) {
         String email = user.getEmail();
         String password = user.getPassword();
         user = userRepository.findByEmail(email).orElse(null);
@@ -148,7 +137,7 @@ public class UserController {
             model.addAttribute("cart", dbCart);
         }
 
-        return path;
+        return "redirect:..";
     }
 
     @RequestMapping("/userDetails")

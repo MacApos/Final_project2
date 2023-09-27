@@ -28,8 +28,7 @@ public class User {
     @NotNull
     @Size(min = 8)
     private String password;
-//    @OneToOne
-//    private Cart cart;
+
     @Column(columnDefinition = "integer default 0")
     private Integer admin=0;
 

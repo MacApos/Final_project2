@@ -1,4 +1,4 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.others;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
@@ -18,15 +18,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-@Controller
-@RequestMapping("/user")
-@SessionAttributes({"loggedUser", "cart"})
-public class UserController {
+public class UserControllerTest {
     UserRepository userRepository;
     CartRepository cartRepository;
     CartItemRepository cartItemRepository;
 
-    public UserController(UserRepository userRepository, CartRepository cartRepository,
+    public UserControllerTest(UserRepository userRepository, CartRepository cartRepository,
                           CartItemRepository cartItemRepository) {
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
@@ -100,27 +97,18 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    private String insertLoginData(@RequestParam(name="path", required=false) String path, Model model) {
+    private String insertLoginData(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("path", path);
         return "user/login";
     }
 
     @PostMapping("/login")
-    public String login(User user, Model model, HttpSession session) {
-        return processLoginData(user, model, session, "redirect..");
-    }
-
-    @RequestMapping(value = "/orderLogin")
-    public String loginAfterOrder(User user, Model model, HttpSession session) {
-        return processLoginData(user, model, session, "order/orderDetails");
-    }
-
-    public String processLoginData(User user, Model model, HttpSession session, String path) {
+    public String processLoginData(User user, Model model, HttpSession session) {
         String email = user.getEmail();
         String password = user.getPassword();
         user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
+        User existingUser;
+        if (user==null) {
             model.addAttribute("emailMessage", "Incorrect email");
             return "user/login";
         }
@@ -129,26 +117,40 @@ public class UserController {
             model.addAttribute("passwordMessage", "Incorrect password");
             return "user/login";
         }
-
         model.addAttribute("loggedUser", user);
+
         Cart dbCart = cartRepository.findByUser(user).orElse(null);
-        if (session.getAttribute("cart") != null) {
+        if (session.getAttribute("cart") != null && // w sesji jest koszyk
+                dbCart != null) { // w bazie jest koszyk
             Cart sessCart = (Cart) session.getAttribute("cart");
-            if (dbCart == null) {
-                sessCart.setUser(user);
-            } else {
+
+            if (sessCart.getUser() == null) { // czy koszyk w sesji ma przypisanego użytkownika
                 dbCart.setItemsQuantity(dbCart.getItemsQuantity() + sessCart.getItemsQuantity());
                 cartItemRepository.updateAllCartItemsOldCartToNewCart(dbCart, sessCart);
-                cartRepository.delete(sessCart);
-                sessCart = dbCart;
+                if (cartRepository.findById(sessCart.getId()).isPresent()) { //czy koszyk w sesji jest w bazie
+                    cartRepository.delete(sessCart);
+                }
+                cartRepository.save(dbCart);
+                model.addAttribute("cart", dbCart);
             }
-            cartRepository.save(sessCart);
-            model.addAttribute("cart", sessCart);
-        } else if (dbCart != null) {
+
+        }
+        if (session.getAttribute("cart") != null && // w sesji jest koszyk
+                dbCart == null) { // w bazie nie ma koszyka
+            Cart sessCart = (Cart) session.getAttribute("cart");
+            if (sessCart.getUser() == null) {
+                sessCart.setUser(user);
+                cartRepository.save(sessCart);
+                model.addAttribute("cart", sessCart);
+            }
+        }
+
+        if (session.getAttribute("cart") == null &&
+                dbCart != null) {
             model.addAttribute("cart", dbCart);
         }
 
-        return path;
+        return "redirect:..";
     }
 
     @RequestMapping("/userDetails")
