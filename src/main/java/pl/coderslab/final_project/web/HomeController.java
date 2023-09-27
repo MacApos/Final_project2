@@ -1,16 +1,11 @@
 package pl.coderslab.final_project.web;
 
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import pl.coderslab.final_project.domain.Category;
 import pl.coderslab.final_project.service.CategoryRepository;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -29,7 +24,7 @@ public class HomeController {
 
     @ModelAttribute("allCategoriesNames")
     public List<String> allCategoriesNames() {
-        return categoryRepository.findAllNames();
+        return categoryRepository.findAllCategoryNames();
     }
 
 }

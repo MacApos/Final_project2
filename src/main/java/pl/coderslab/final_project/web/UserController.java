@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/user")
-@SessionAttributes({"loggedUser", "cart"})
+@SessionAttributes({"loggedUser", "admin", "cart"})
 public class UserController {
     UserRepository userRepository;
     CartRepository cartRepository;
@@ -100,7 +100,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    private String insertLoginData(@RequestParam(name="path", required=false) String path, Model model) {
+    private String insertLoginData(@RequestParam(name = "path", required = false) String path, Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("path", path);
         return "user/login";
@@ -108,12 +108,12 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(User user, Model model, HttpSession session) {
-        return processLoginData(user, model, session, "redirect..");
+        return processLoginData(user, model, session, "redirect:..");
     }
 
     @RequestMapping(value = "/orderLogin")
     public String loginAfterOrder(User user, Model model, HttpSession session) {
-        return processLoginData(user, model, session, "order/orderDetails");
+        return processLoginData(user, model, session, "redirect:../cart/cartDetails");
     }
 
     public String processLoginData(User user, Model model, HttpSession session, String path) {
@@ -131,6 +131,9 @@ public class UserController {
         }
 
         model.addAttribute("loggedUser", user);
+        if (user.getAdmin() == 1) {
+            model.addAttribute("admin", 1);
+        }
         Cart dbCart = cartRepository.findByUser(user).orElse(null);
         if (session.getAttribute("cart") != null) {
             Cart sessCart = (Cart) session.getAttribute("cart");
@@ -147,7 +150,6 @@ public class UserController {
         } else if (dbCart != null) {
             model.addAttribute("cart", dbCart);
         }
-
         return path;
     }
 

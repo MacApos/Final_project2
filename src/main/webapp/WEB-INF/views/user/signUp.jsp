@@ -23,9 +23,6 @@
                     <span class="input-group-text">@</span>
                     <form:input path="email" cssClass="form-control" placeholder="Podaj email"/>
                     <form:errors path="email" element="div" cssClass="errorDiv"/>
-                    <div class="invalid-feedback">
-                    </div>
-
                 </div>
                 <div class="errorDiv">${emailMessage}</div>
                 <div class="form-group">

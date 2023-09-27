@@ -449,8 +449,25 @@
                     <a href="/cart/cartDetails" class="nav-link link-body-emphasis px-2">\_${itemsQuantity}_/></a>
                 </li>
             </ul>
+            <ul class="nav" id="adminLogin">
+                <li class="nav-item dropdown-nav no-arrow">
+                    <a class="nav-link link-body-emphasis px-2" id="adminName">${sessionScope.loggedUser.firstName}</a>
+                    <div class="dropdown_menu--animated">
+                        <a href="/user/userDetails">Profil</a>
+                        <a href="/cart/cartDetails">Koszyk</a>
+                        <a href="/admin/addProduct">Dodaj produkt</a>
+<%--                        <a href="">Edytuj produkt</a>--%>
+<%--                        <a href="">Usuń produkt</a>--%>
+                        <a href="/logout">Wyloguj</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="/cart/cartDetails" class="nav-link link-body-emphasis px-2">\_${itemsQuantity}_/></a>
+                </li>
+            </ul>
         </div>
         <div id="session"><c:out value="${sessionScope.loggedUser}"/></div>
+        <div id="admin"><c:out value="${sessionScope.admin}"/></div>
     </nav>
 </main>
 

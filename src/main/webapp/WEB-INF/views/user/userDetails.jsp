@@ -37,8 +37,18 @@
                 Liczba produktów
                 w koszyku:
             </div>
+
+            <c:choose>
+                <c:when test="${not empty sessionScope.cart.itemsQuantity}">
+                    <c:set var="itemsQuantity" value="${sessionScope.cart.itemsQuantity}"/>
+                </c:when>
+                <c:otherwise>
+                    <c:set var="itemsQuantity" value="0"/>
+                </c:otherwise>
+            </c:choose>
+
             <div class="col text-start">
-                ${showUser.email}
+                ${sessionScope.cart.itemsQuantity}
             </div>
         </div>
         <div class="form-group d-grid gap-2 d-sm-flex justify-content-sm-center">

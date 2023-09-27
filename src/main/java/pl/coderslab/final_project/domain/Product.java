@@ -1,8 +1,7 @@
 package pl.coderslab.final_project.domain;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -10,18 +9,37 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
+    @NotNull
+    @NotBlank
+    @Size(min = 2)
     private String name;
-    private String size;
-    private String color;
-    private String scent;
+
+    private String size=null;
+    private String color=null;
+    private String scent=null;
+
     @Column(nullable = false)
+    @NotNull
+    @NotBlank
+    @Size(min = 2)
     private String type;
+
     @Column(nullable = false)
+    @NotNull
+    @NotBlank
+    @Size(min = 2)
     private String description;
+
+    @DecimalMin("1.0")
     @Column(scale = 2, nullable = false)
     private BigDecimal price;
+
+    @NotNull
+    @NotBlank
     private String img;
+
     @ManyToOne
     @JoinColumn(name = "product_category", nullable = false)
     private Category category;
@@ -114,7 +132,10 @@ public class Product {
                 ", size='" + size + '\'' +
                 ", color='" + color + '\'' +
                 ", scent='" + scent + '\'' +
+                ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
+                ", price=" + price +
+                ", img='" + img + '\'' +
                 ", category=" + category +
                 '}';
     }

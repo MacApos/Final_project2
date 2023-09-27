@@ -56,11 +56,10 @@ public class CartController {
         }
         addToCart(cartItem, product, model, session);
 
-        if(session.getAttribute("user")==null){
+        if (session.getAttribute("loggedUser") == null) {
             return "redirect:../user/login?path=orderLogin";
         }
-
-        return "order/orderDetails";
+        return "redirect:cartDetails";
     }
 
     public void addToCart(CartItem cartItem, Product product, Model model, HttpSession session) {
@@ -125,24 +124,4 @@ public class CartController {
         cartItemRepository.deleteById(id);
         return "redirect:cartDetails";
     }
-
-//    @RequestMapping(value = "/{productId}", params = "order")
-//    @ResponseBody
-//    public String order(@Valid CartItem cartItem, BindingResult result,
-//                        @PathVariable("productId") Long productId, Model model, HttpSession session) {
-//        Product product = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
-//        if (result.hasErrors()) {
-//            model.addAttribute("product", product);
-//            return "product/productDetails";
-//        }
-//
-//        Cart cart = new Cart();
-//        if (session.getAttribute("cart") != null) { //nie jesteś zalogowany i masz już produkty w koszyku
-//            cart = (Cart) model.getAttribute("cart"); //ustawiasz aktualny koszyk na istniejący koszyk
-//        }
-//
-//
-//
-//        return "order";
-//    }
 }
