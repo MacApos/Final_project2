@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-    const img = document.querySelector("[name='img']");
-    const imgDiv = document.querySelector("div img");
-    imgDiv.setAttribute('hidden', 'hidden')
+    const imgForm = document.querySelector("[name='img']");
+    const img = document.querySelector("img");
+    const imgDiv = img.parentElement;
+    imgDiv.setAttribute('hidden', 'hidden');
 
-    img.addEventListener("change", (event) => {
-        imgDiv.setAttribute('src',
-            '../../../resources/product_images/');
+    imgForm.addEventListener("change", (event) => {
         const fileList = event.target.files[0];
-        imgDiv.setAttribute('src', imgDiv.getAttribute('src')+fileList.name)
+        // console.log(imgForm.files[0]) //same result with img.files[0]
+        img.setAttribute('src', img.getAttribute('src') + fileList.name)
         imgDiv.removeAttribute('hidden');
     })
 

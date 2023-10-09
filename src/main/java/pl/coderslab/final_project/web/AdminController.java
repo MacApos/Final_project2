@@ -29,23 +29,27 @@ public class AdminController {
 
     @GetMapping("/addProduct")
     public String insertProductData(Model model) {
-        List<String> allProductTypes = productRepository.findAllProductsTypes();
-        List<String> allCategoriesNames = categoryRepository.findAllCategoryNames();
-        model.addAttribute("allProductTypes", allProductTypes);
-        model.addAttribute("allCategoriesNames", allCategoriesNames);
+        findTypesAndCategories(model);
         model.addAttribute("product", new Product());
         return "admin/addProduct";
     }
 
+    public void findTypesAndCategories(Model model){
+        List<String> allProductTypes = productRepository.findAllProductsTypes();
+        List<String> allCategoriesNames = categoryRepository.findAllCategoryNames();
+        model.addAttribute("allProductTypes", allProductTypes);
+        model.addAttribute("allCategoriesNames", allCategoriesNames);
+    }
+
     @PostMapping("/addProduct")
-    @ResponseBody
+//    @ResponseBody
     public String processProductData(@Valid Product product, BindingResult result,
                                      Model model, HttpServletRequest request) {
         model.addAttribute("product", product);
         if (result.hasErrors()){
+            findTypesAndCategories(model);
             return "admin/addProduct";
         }
-//        productRepository.save(product);
 
         if(product.getColor().isBlank()){
             product.setColor(null);
@@ -55,12 +59,9 @@ public class AdminController {
             product.setScent(null);
         }
 
-        if(product.getSize().isBlank()){
-            product.setSize(null);
-        }
-
         Category category = categoryRepository.findByName(request.getParameter("category")).orElse(null);
         product.setCategory(category);
+        productRepository.save(product);
         return product.toString();
     }
 

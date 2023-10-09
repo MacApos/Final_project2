@@ -32,7 +32,8 @@ public class Product {
     @Size(min = 2)
     private String description;
 
-    @DecimalMin("1.0")
+    @DecimalMin("0.01")
+    @NotNull
     @Column(scale = 2, nullable = false)
     private BigDecimal price;
 

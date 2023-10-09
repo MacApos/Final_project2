@@ -19,9 +19,10 @@ public class Cart {
 
     @Min(value = 0)
     @Column(columnDefinition = "integer default 0")
-    private Integer itemsQuantity=0;
+    private Integer itemsQuantity = 0;
 
     @OneToOne
+    @JoinColumn(unique = true)
     private User user;
 
     public Long getId() {

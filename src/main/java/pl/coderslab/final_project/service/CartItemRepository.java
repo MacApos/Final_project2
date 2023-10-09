@@ -19,6 +19,14 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Query("UPDATE CartItem ci SET ci.cart=?1 WHERE ci.cart=?2")
     void updateAllCartItemsOldCartToNewCart(Cart newCart, Cart oldCart);
 
+//    @Modifying
+//    @Query("""
+//            UPDATE CartItem ci
+//            SET ci.cart = case when (?2, ?2 + 1)
+//            where ci.cart = ?4
+//            """)
+//    void updateAllCartItemsOldCartToNewCart(Integer quantity, Cart updatedCart, Cart newCart, Cart oldCart);
+
     List<CartItem> findAllByCart(Cart cart);
 
     Optional<CartItem> findFirstByProductAndCart(Product product, Cart cart);

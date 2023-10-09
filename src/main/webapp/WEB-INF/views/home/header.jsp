@@ -7,6 +7,7 @@
     <script src="/resources/assets/js/color-modes.js"></script>
     <script src="/resources/js/login/login.js"></script>
 
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -277,16 +278,53 @@
         }
 
         .errorDiv {
-            color: red;
-            font-weight: bold;
+            position: relative;
+            padding: 0.75rem 4rem;
+            border-radius: 0.25rem;
+
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+
+            opacity: 1;
+            transition: opacity 0.15s linear;
+
+            /*color: red;*/
+            /*font-weight: bold;*/
         }
 
         .footer-section {
             background: var(--background-color);
         }
 
-        .hidden {
-            display: none;
+        .btn-light:hover {
+            /*color: #212529;*/
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+
+        .form-control:disabled {
+            background-color: #fff;
+        }
+
+        .btn-light {
+            border-color: #dae0e5;
+        }
+
+        .btn-light-hover {
+            background-color: #e2e6ea;
+            /*border-radius: 0.375rem 0 0 0.375rem;*/
+        }
+
+        .btn-light-shadow {
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+            border-radius: 0.375rem;
+            z-index: 3;
+        }
+
+        .btn-light-border {
+            border-color: #80bdff !important;
         }
 
     </style>
@@ -456,8 +494,8 @@
                         <a href="/user/userDetails">Profil</a>
                         <a href="/cart/cartDetails">Koszyk</a>
                         <a href="/admin/addProduct">Dodaj produkt</a>
-<%--                        <a href="">Edytuj produkt</a>--%>
-<%--                        <a href="">Usuń produkt</a>--%>
+                        <%--                        <a href="">Edytuj produkt</a>--%>
+                        <%--                        <a href="">Usuń produkt</a>--%>
                         <a href="/logout">Wyloguj</a>
                     </div>
                 </li>

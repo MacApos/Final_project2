@@ -19,12 +19,15 @@
                     <form:errors path="lastName" element="div" cssClass="errorDiv"/>
                 </div>
 
-                <div class="input-group has-validation form-group">
-                    <span class="input-group-text">@</span>
-                    <form:input path="email" cssClass="form-control" placeholder="Podaj email"/>
-                    <form:errors path="email" element="div" cssClass="errorDiv"/>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-text">@</span>
+                        <form:input path="email" cssClass="form-control" placeholder="Podaj email"/>
+                        <form:errors path="email" element="div" cssClass="errorDiv"/>
+                    </div>
+                    <div class="errorDiv">${emailMessage}</div>
                 </div>
-                <div class="errorDiv">${emailMessage}</div>
+
                 <div class="form-group">
                     <form:password path="password" cssClass="form-control" placeholder="Podaj hasło"/>
                     <form:errors path="password" element="div" cssClass="errorDiv"/>

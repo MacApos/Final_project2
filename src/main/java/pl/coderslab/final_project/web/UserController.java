@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.Cart;
+import pl.coderslab.final_project.domain.CartItem;
 import pl.coderslab.final_project.domain.User;
 import pl.coderslab.final_project.service.CartItemRepository;
 import pl.coderslab.final_project.service.CartRepository;
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/signUp")
-    public String procesLoginData(@Valid User user, BindingResult result, Model model) {
+    public String processLoginData(@Valid User user, BindingResult result, Model model) {
         String password = user.getPassword();
         String passwordMessage = checkPassword(password);
         String emailMessage = checkEmail(user.getEmail());
@@ -141,7 +142,17 @@ public class UserController {
                 sessCart.setUser(user);
             } else {
                 dbCart.setItemsQuantity(dbCart.getItemsQuantity() + sessCart.getItemsQuantity());
-                cartItemRepository.updateAllCartItemsOldCartToNewCart(dbCart, sessCart);
+
+                for (CartItem cartItem : cartItemRepository.findAllByCart(dbCart)) {
+                    CartItem existingCartItem = cartItemRepository
+                            .findFirstByProductAndCart(cartItem.getProduct(), sessCart).orElse(null);
+                    if (existingCartItem == null) {
+                        cartItemRepository.updateAllCartItemsOldCartToNewCart(dbCart, sessCart);
+                    } else {
+                        cartItem.setQuantity(cartItem.getQuantity() + existingCartItem.getQuantity());
+                        cartItemRepository.delete(existingCartItem);
+                    }
+                }
                 cartRepository.delete(sessCart);
                 sessCart = dbCart;
             }

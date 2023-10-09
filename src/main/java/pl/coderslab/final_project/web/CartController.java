@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cart")
@@ -101,6 +102,7 @@ public class CartController {
         List<CartItem> cartItems;
         LinkedHashMap<CartItem, Product> map = new LinkedHashMap<>();
         BigDecimal totalPriceForCart = BigDecimal.valueOf(0L);
+
         if (session.getAttribute("cart") != null) {
             Cart cart = (Cart) session.getAttribute("cart");
             cartItems = cartItemRepository.findAllByCart(cart);

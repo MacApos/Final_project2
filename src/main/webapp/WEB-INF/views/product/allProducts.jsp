@@ -6,10 +6,10 @@
 <c:forEach items="${allProducts}" var="product">
     <div class="row row-cols-1 row-cols-lg-3">
         <div>
-            <img src="../../../resources/product_images/${product.img}.jpg" style="width: 70%">
+            <img src="../../../resources/product_images/${product.img}" style="width: 70%">
         </div>
         <div>
-            <a href = "<c:url value = "/product/${product.id}"/>">${product.name}</a>
+            <a href="<c:url value = "/product/${product.id}"/>">${product.name}</a>
         </div>
         <div>
                 ${product.price} zł
