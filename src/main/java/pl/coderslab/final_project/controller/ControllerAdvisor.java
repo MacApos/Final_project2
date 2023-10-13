@@ -7,27 +7,35 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import pl.coderslab.final_project.repository.CategoryRepository;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @ControllerAdvice
 public class ControllerAdvisor {
+    public static LinkedHashMap<String, String> allCategoriesNames;
+
     CategoryRepository categoryRepository;
 
     public ControllerAdvisor(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
-    public String removeAccents(String input) {
-        return StringUtils.stripAccents(input);
+    public String normalizeInput(String input) {
+        return StringUtils.stripAccents(input)
+                .replaceAll(" ", "-")
+                .toLowerCase();
+    }
+
+    public LinkedHashMap<String, String> findAllCategoriesNames() {
+        allCategoriesNames = new LinkedHashMap<>();
+        List<String> findAllCategoriesNames = categoryRepository.findAllCategoriesNames();
+        findAllCategoriesNames.forEach(categoryName -> allCategoriesNames.put(normalizeInput(categoryName),
+                categoryName));
+        return allCategoriesNames;
     }
 
     @ModelAttribute("allCategoriesNames")
-    public HashMap<String, String> allCategoriesNames(Model model) {
-        HashMap<String, String> allCategoriesNames = new HashMap<>();
-        List<String> findAllCategoriesNames = categoryRepository.findAllCategoriesNames();
-
-        findAllCategoriesNames.forEach(category -> allCategoriesNames.put(
-                category, removeAccents(category.replaceAll(" ", "-"))));
-        return allCategoriesNames;
+    public LinkedHashMap<String, String> allCategoriesNames(Model model) {
+        return findAllCategoriesNames();
     }
 }

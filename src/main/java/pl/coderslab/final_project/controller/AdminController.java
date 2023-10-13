@@ -13,8 +13,8 @@ import pl.coderslab.final_project.repository.ProductRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("admin")
@@ -38,7 +38,6 @@ public class AdminController {
         List<String> allProductTypes = productRepository.findAllProductsTypes();
         List<String> allCategoriesNames = categoryRepository.findAllCategoriesNames();
         model.addAttribute("allProductTypes", allProductTypes);
-        model.addAttribute("allCategoriesNames", allCategoriesNames);
     }
 
     @PostMapping("/addProduct")
@@ -50,7 +49,6 @@ public class AdminController {
         String categoryName = request.getParameter("categoryName");
         Category category = categoryRepository.findByName(categoryName).orElse(null);
         boolean isDataValid = true;
-        int id = 0;
         if (category == null) {
             String categoryMessage = checkCategory(categoryName);
             if (categoryMessage.isBlank()) {
@@ -62,8 +60,6 @@ public class AdminController {
                 model.addAttribute("categoryMessage", categoryMessage);
                 isDataValid = false;
             }
-        } else {
-            id = category.getId().intValue();
         }
         if (result.hasErrors()) {
             isDataValid = false;
@@ -72,24 +68,18 @@ public class AdminController {
             return "admin/addProduct";
         }
 
-        String path = "/product/";
-        switch (id) {
-            case 1:
-                path += "rope";
-                break;
-            case 2:
-                path += "wool";
-                break;
-            case 3:
-                path += "lavender";
-                break;
-            default:
-                path = "";
+        LinkedHashMap<String, String> allCategoriesNames = new LinkedHashMap<>();
+        Object modelAttribute = model.getAttribute("allCategoriesNames");
+        if (modelAttribute != null) {
+            allCategoriesNames = (LinkedHashMap<String, String>) modelAttribute;
         }
+        Set<String> values = allCategoriesNames.keySet();
+        Optional<String> first = values.stream().filter(value -> value.equals(categoryName)).findFirst();
 
         product.setCategory(category);
         productRepository.save(product);
-        return String.format("redirect:..%s", path);
+//        return String.format("redirect:..%s", path);
+        return "";
     }
 
     private String checkCategory(String categoryName) {

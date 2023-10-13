@@ -3,9 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:include page="../home/header.jsp"/>
 
-<div id="admin"><c:out value="${sessionScope.admin}"/></div>
 <c:forEach items="${allProducts}" var="product">
-
     <%--    row-cols-1 row-cols-lg-3--%>
     <div class="container">
         <div class="row align-items-start">
@@ -13,7 +11,7 @@
                 <img src="../../../resources/product_images/${product.img}" style="width: 70%">
             </div>
             <div class="col">
-                <a href="<c:url value = "/product/${product.id}"/>">${product.name}</a>
+                <a href="<c:url value = "/product/${path}/${product.id}"/>">${product.name}</a>
             </div>
             <div class="col-2">
                     ${product.price} zł

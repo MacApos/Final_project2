@@ -457,13 +457,18 @@
             <ul class="nav me-auto" id="categoriesList">
                 <li class="nav-item"><a href="/" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a>
                 </li>
-                ${allCategoriesNames}
-                <li class="nav-item"><a href="/product/rope" class="nav-link link-body-emphasis px-2">Wyroby ze
-                    sznurka</a></li>
-                <li class="nav-item"><a href="/product/wool" class="nav-link link-body-emphasis px-2">Wyroby z
-                    włóczki</a></li>
-                <li class="nav-item"><a href="/product/lavender" class="nav-link link-body-emphasis px-2">Wyroby
-                    lawendowe</a></li>
+
+                <c:forEach items="${allCategoriesNames}" var="category">
+                    <li class="nav-item">
+                        <a href="<c:url value = "/product/${category.key}"/>" class="nav-link link-body-emphasis px-2">
+                            ${category.value}</a></li>
+                </c:forEach>
+<%--                <li class="nav-item"><a href="/product/rope" class="nav-link link-body-emphasis px-2">Wyroby ze--%>
+<%--                    sznurka</a></li>--%>
+<%--                <li class="nav-item"><a href="/product/wool" class="nav-link link-body-emphasis px-2">Wyroby z--%>
+<%--                    włóczki</a></li>--%>
+<%--                <li class="nav-item"><a href="/product/lavender" class="nav-link link-body-emphasis px-2">Wyroby--%>
+<%--                    lawendowe</a></li>--%>
             </ul>
 
             <c:choose>

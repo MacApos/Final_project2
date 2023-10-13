@@ -3,8 +3,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:include page="../home/header.jsp"/>
 
-<script src="/resources/js/selectList/customSelect.js"></script>
-<script src="/resources/js/validation/validate.js"></script>
+<script src="../../../resources/js/selectList/customSelect.js"></script>
+<script src="../../../resources/js/validation/validate.js"></script>
 
 <div class="container">
     <main>
@@ -107,7 +107,7 @@
                     <select name="categoryName" class="form-select" required>
                         <option value="" id="placeholder" disabled selected>Wybierz rodzaj</option>
                         <c:forEach items="${allCategoriesNames}" var="category">
-                            <option>${category}</option>
+                            <option>${category.value}</option>
                         </c:forEach>
                         <option value="new">Dodaj nową</option>
                     </select>

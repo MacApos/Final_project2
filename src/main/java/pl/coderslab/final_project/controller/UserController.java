@@ -35,6 +35,7 @@ public class UserController {
 
     @GetMapping("/signUp")
     public String insertRegistrationData(Model model) {
+        System.out.println("test");
         User user = new User();
         model.addAttribute("user", user);
         return "user/signUp";

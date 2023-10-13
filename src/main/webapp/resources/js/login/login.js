@@ -6,22 +6,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     const adminLogin = document.querySelector('#adminLogin');
 
     const errors = document.querySelectorAll(".errorDiv");
-    const categories = Array.from(document.querySelector("#categories").children);
-    const categoriesList = document.querySelector("#categoriesList");
-
-    // if (Array.isArray(categories) && categories.length) {
-        categories.forEach(function (element) {
-            const listItemToClone = categoriesList.children;
-            const listItem = categoriesList.children[0].cloneNode(true);
-            const listLink = listItem.children[0];
-            listLink.innerHTML = (element.innerHTML);
-            console.log(listLink)
-            categoriesList.appendChild(listItem);
-            // const listLink = listItem.children();
-            // console.log(listItem);
-            // console.log(listLink);
-        })
-    // }
 
     session.setAttribute("hidden", "hidden");
     admin.setAttribute("hidden", "hidden");
