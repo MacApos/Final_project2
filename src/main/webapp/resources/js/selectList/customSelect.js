@@ -3,22 +3,30 @@
 document.addEventListener("DOMContentLoaded", function (event) {
     const select = document.querySelectorAll("select");
     select.forEach(function (element) {
+        const parent = element.parentElement;
         const newOption = element.querySelector("option[value='new']");
-        const defaultOption = element.querySelector("option[value='placeholder']");
-        const form = element.parentElement.querySelector("input");
+        const defaultOption = element.querySelector("option#placeholder");
+        const input = parent.querySelector("input");
+        const errorDiv = parent.querySelector("input ~ div.invalid-feedback");
+        parent.removeChild(input);
+        parent.removeChild(errorDiv);
+        console.log(errorDiv)
 
         element.addEventListener("change", function (event) {
             if (newOption.selected) {
-                form.classList.remove('d-none');
-                element.classList.add('d-none');
-                form.focus();
+                parent.removeChild(element);
+                parent.appendChild(input);
+                parent.appendChild(errorDiv);
+                input.focus();
             }
         });
 
-        form.addEventListener("input", function (event) {
-            if (form.value.trim() === "") {
-                element.classList.remove('d-none');
-                form.classList.add('d-none');
+        input.addEventListener("input", function (event) {
+            if (input.value.trim() === "") {
+                input.innerText = "";
+                parent.removeChild(input);
+                parent.removeChild(errorDiv);
+                parent.appendChild(element);
                 defaultOption.selected = true;
             }
         });

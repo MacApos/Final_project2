@@ -1,17 +1,17 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.*;
-import pl.coderslab.final_project.service.*;
+import pl.coderslab.final_project.repository.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cart")
@@ -35,12 +35,13 @@ public class CartController {
 
     @RequestMapping(value = "/{productId}", params = "add")
     public String add(@Valid CartItem cartItem, @PathVariable("productId") Long productId,
-                      BindingResult result, Model model, HttpSession session) {
+                      BindingResult result, Model model, HttpSession session, HttpServletRequest request) {
         Product product = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("product", product);
         if (result.hasErrors()) {
             return "product/productDetails";
         }
+
         addToCart(cartItem, product, model, session);
         List<Product> allProducts = productRepository.findAllByCategoryId(product.getCategory().getId());
         model.addAttribute("allProducts", allProducts);

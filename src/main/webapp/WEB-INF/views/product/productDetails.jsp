@@ -5,7 +5,7 @@
 
 <div class="row row-cols-2 row-cols-lg-3">
     <div>
-        <img src="../../../resources/product_images/${product.img}.jpg" style="width: 50%">
+        <img src="../../../resources/product_images/${product.img}" style="width: 50%">
     </div>
     <div>
         <div>Nazwa: ${product.name}</div>

@@ -1,4 +1,4 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.controller;
 
 
 import org.springframework.core.annotation.Order;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 
@@ -20,10 +19,12 @@ public class RequestResponseLoggingFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+
 //        HttpSession session = request.getSession();
 //        if (session.getAttribute("admin") == null) {
 //            session.setAttribute("admin", 0);
 //        }
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

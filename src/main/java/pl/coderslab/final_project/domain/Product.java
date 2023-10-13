@@ -16,21 +16,15 @@ public class Product {
     @Size(min = 2)
     private String name;
 
-    private String size=null;
-    private String color=null;
-    private String scent=null;
-
-    @Column(nullable = false)
-    @NotNull
-    @NotBlank
-    @Size(min = 2)
-    private String type;
-
     @Column(nullable = false)
     @NotNull
     @NotBlank
     @Size(min = 2)
     private String description;
+
+    private String size=null;
+    private String color=null;
+    private String scent=null;
 
     @DecimalMin("0.01")
     @NotNull
@@ -40,6 +34,12 @@ public class Product {
     @NotNull
     @NotBlank
     private String img;
+
+    @Column(nullable = false)
+    @NotNull
+    @NotBlank
+    @Size(min = 2)
+    private String type;
 
     @ManyToOne
     @JoinColumn(name = "product_category", nullable = false)

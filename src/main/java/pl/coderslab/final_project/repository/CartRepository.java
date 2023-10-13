@@ -1,16 +1,13 @@
-package pl.coderslab.final_project.service;
+package pl.coderslab.final_project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.final_project.domain.Cart;
-import pl.coderslab.final_project.domain.CartItem;
-import pl.coderslab.final_project.domain.Product;
 import pl.coderslab.final_project.domain.User;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Repository

@@ -1,18 +1,16 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.CartItem;
 import pl.coderslab.final_project.domain.Category;
 import pl.coderslab.final_project.domain.Product;
-import pl.coderslab.final_project.service.CartItemRepository;
-import pl.coderslab.final_project.service.CategoryRepository;
-import pl.coderslab.final_project.service.ProductRepository;
+import pl.coderslab.final_project.repository.CartItemRepository;
+import pl.coderslab.final_project.repository.CategoryRepository;
+import pl.coderslab.final_project.repository.ProductRepository;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -29,31 +27,31 @@ public class ProductController {
         this.cartItemRepository = cartItemRepository;
     }
 
-    public String removeAccentsWithApacheCommons(String input) {
-        return StringUtils.stripAccents(input);
-    }
+
 
     @RequestMapping("/rope")
-    public String showRopeProducts(Model model) {
+    public String showRopeProducts(Model model, HttpServletRequest request) {
         List<Product> allProducts = productRepository.findAllByCategoryId(1L);
         model.addAttribute("allProducts", allProducts);
+        model.addAttribute("path", request.getRequestURI());
         return "product/allProducts";
     }
 
     @RequestMapping("/wool")
-    public String showWoolProducts(Model model) {
+    public String showWoolProducts(Model model, HttpServletRequest request) {
         List<Product> allProducts = productRepository.findAllByCategoryId(2L);
         model.addAttribute("allProducts", allProducts);
+        model.addAttribute("path", request.getRequestURI());
         return "product/allProducts";
     }
 
     @RequestMapping("/lavender")
-    public String showLavenderProducts(Model model) {
+    public String showLavenderProducts(Model model, HttpServletRequest request) {
         Category category = categoryRepository.findById(1L).orElse(null);
-
         category.getName();
         List<Product> allProducts = productRepository.findAllByCategoryId(3L);
         model.addAttribute("allProducts", allProducts);
+        model.addAttribute("path", request.getRequestURI());
         return "product/allProducts";
     }
 
@@ -68,7 +66,6 @@ public class ProductController {
             return "home/404";
         }
     }
-
 
     @RequestMapping("/product/error")
     @ResponseBody

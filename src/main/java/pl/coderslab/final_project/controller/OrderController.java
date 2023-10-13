@@ -1,4 +1,4 @@
-package pl.coderslab.final_project.web;
+package pl.coderslab.final_project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.coderslab.final_project.domain.Cart;
 import pl.coderslab.final_project.domain.CartItem;
-import pl.coderslab.final_project.service.CartItemRepository;
-import pl.coderslab.final_project.service.CartRepository;
-import pl.coderslab.final_project.service.CategoryRepository;
+import pl.coderslab.final_project.repository.CartItemRepository;
+import pl.coderslab.final_project.repository.CartRepository;
+import pl.coderslab.final_project.repository.CategoryRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

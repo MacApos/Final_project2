@@ -1,4 +1,4 @@
-package pl.coderslab.final_project.others;
+package pl.coderslab.final_project.controller;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
@@ -6,24 +6,27 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.final_project.domain.Cart;
+import pl.coderslab.final_project.domain.CartItem;
 import pl.coderslab.final_project.domain.User;
-import pl.coderslab.final_project.service.CartItemRepository;
-import pl.coderslab.final_project.service.CartRepository;
-import pl.coderslab.final_project.service.UserRepository;
+import pl.coderslab.final_project.repository.CartItemRepository;
+import pl.coderslab.final_project.repository.CartRepository;
+import pl.coderslab.final_project.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class UserControllerTest {
+@Controller
+@RequestMapping("/user")
+@SessionAttributes({"loggedUser", "admin", "cart"})
+public class UserController {
     UserRepository userRepository;
     CartRepository cartRepository;
     CartItemRepository cartItemRepository;
 
-    public UserControllerTest(UserRepository userRepository, CartRepository cartRepository,
+    public UserController(UserRepository userRepository, CartRepository cartRepository,
                           CartItemRepository cartItemRepository) {
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
@@ -38,12 +41,12 @@ public class UserControllerTest {
     }
 
     @PostMapping("/signUp")
-    public String procesLoginData(@Valid User user, BindingResult result, Model model) {
+    public String processLoginData(@Valid User user, BindingResult result, Model model) {
         String password = user.getPassword();
         String passwordMessage = checkPassword(password);
         String emailMessage = checkEmail(user.getEmail());
         boolean isDataValid = true;
-        if (!passwordMessage.equals("")) {
+        if (!passwordMessage.isBlank()) {
             model.addAttribute("passwordMessage", passwordMessage);
             isDataValid = false;
         }
@@ -97,18 +100,27 @@ public class UserControllerTest {
     }
 
     @GetMapping("/login")
-    private String insertLoginData(Model model) {
+    private String insertLoginData(@RequestParam(name = "path", required = false) String path, Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("path", path);
         return "user/login";
     }
 
     @PostMapping("/login")
-    public String processLoginData(User user, Model model, HttpSession session) {
+    public String login(User user, Model model, HttpSession session) {
+        return processLoginData(user, model, session, "redirect:..");
+    }
+
+    @RequestMapping(value = "/orderLogin")
+    public String loginAfterOrder(User user, Model model, HttpSession session) {
+        return processLoginData(user, model, session, "redirect:../cart/cartDetails");
+    }
+
+    public String processLoginData(User user, Model model, HttpSession session, String path) {
         String email = user.getEmail();
         String password = user.getPassword();
         user = userRepository.findByEmail(email).orElse(null);
-        User existingUser;
-        if (user==null) {
+        if (user == null) {
             model.addAttribute("emailMessage", "Incorrect email");
             return "user/login";
         }
@@ -117,40 +129,38 @@ public class UserControllerTest {
             model.addAttribute("passwordMessage", "Incorrect password");
             return "user/login";
         }
+
         model.addAttribute("loggedUser", user);
-
+        if (user.getAdmin() == 1) {
+            model.addAttribute("admin", 1);
+        }
         Cart dbCart = cartRepository.findByUser(user).orElse(null);
-        if (session.getAttribute("cart") != null && // w sesji jest koszyk
-                dbCart != null) { // w bazie jest koszyk
+        if (session.getAttribute("cart") != null) {
             Cart sessCart = (Cart) session.getAttribute("cart");
-
-            if (sessCart.getUser() == null) { // czy koszyk w sesji ma przypisanego użytkownika
-                dbCart.setItemsQuantity(dbCart.getItemsQuantity() + sessCart.getItemsQuantity());
-                cartItemRepository.updateAllCartItemsOldCartToNewCart(dbCart, sessCart);
-                if (cartRepository.findById(sessCart.getId()).isPresent()) { //czy koszyk w sesji jest w bazie
-                    cartRepository.delete(sessCart);
-                }
-                cartRepository.save(dbCart);
-                model.addAttribute("cart", dbCart);
-            }
-
-        }
-        if (session.getAttribute("cart") != null && // w sesji jest koszyk
-                dbCart == null) { // w bazie nie ma koszyka
-            Cart sessCart = (Cart) session.getAttribute("cart");
-            if (sessCart.getUser() == null) {
+            if (dbCart == null) {
                 sessCart.setUser(user);
-                cartRepository.save(sessCart);
-                model.addAttribute("cart", sessCart);
-            }
-        }
+            } else {
+                dbCart.setItemsQuantity(dbCart.getItemsQuantity() + sessCart.getItemsQuantity());
 
-        if (session.getAttribute("cart") == null &&
-                dbCart != null) {
+                for (CartItem cartItem : cartItemRepository.findAllByCart(dbCart)) {
+                    CartItem existingCartItem = cartItemRepository
+                            .findFirstByProductAndCart(cartItem.getProduct(), sessCart).orElse(null);
+                    if (existingCartItem == null) {
+                        cartItemRepository.updateAllCartItemsOldCartToNewCart(dbCart, sessCart);
+                    } else {
+                        cartItem.setQuantity(cartItem.getQuantity() + existingCartItem.getQuantity());
+                        cartItemRepository.delete(existingCartItem);
+                    }
+                }
+                cartRepository.delete(sessCart);
+                sessCart = dbCart;
+            }
+            cartRepository.save(sessCart);
+            model.addAttribute("cart", sessCart);
+        } else if (dbCart != null) {
             model.addAttribute("cart", dbCart);
         }
-
-        return "redirect:..";
+        return path;
     }
 
     @RequestMapping("/userDetails")

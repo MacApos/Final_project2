@@ -1,4 +1,4 @@
-package pl.coderslab.final_project.service;
+package pl.coderslab.final_project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT DISTINCT c.name FROM Category c")
-    List<String> findAllCategoryNames();
+    List<String> findAllCategoriesNames();
 
     Optional<Category> findByName(String name);
 

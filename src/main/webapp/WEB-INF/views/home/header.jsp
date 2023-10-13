@@ -4,9 +4,13 @@
 <!doctype html>
 <html lang="pl" data-bs-theme="auto">
 <head>
-    <script src="/resources/assets/js/color-modes.js"></script>
-    <script src="/resources/js/login/login.js"></script>
+    <script src="../../../resources/assets/js/color-modes.js"></script>
+    <script src="../../../resources/js/login/login.js"></script>
 
+
+    <%--    <c:if test="${sessionScope.admin == 1}">--%>
+    <%--        <script src="../../../resources/js/login/admin.js"></script>--%>
+    <%--    </c:if>--%>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -270,11 +274,12 @@
             border: black;
         }
 
-        .form-group {
+        .form-group, .input-group {
             padding-bottom: 0.5rem;
             padding-top: 0.5rem;
             margin-bottom: 0.5rem;
             margin-top: 0.5rem;
+            /*flex-wrap: wrap;*/
         }
 
         .errorDiv {
@@ -313,6 +318,8 @@
 
         .btn-light-hover {
             background-color: #e2e6ea;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
             /*border-radius: 0.375rem 0 0 0.375rem;*/
         }
 
@@ -447,9 +454,10 @@
     </header>
     <nav class="py-2 mb-4 bg-bd-tertiary border-bottom">
         <div class="container d-flex flex-wrap">
-            <ul class="nav me-auto">
+            <ul class="nav me-auto" id="categoriesList">
                 <li class="nav-item"><a href="/" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a>
                 </li>
+                ${allCategoriesNames}
                 <li class="nav-item"><a href="/product/rope" class="nav-link link-body-emphasis px-2">Wyroby ze
                     sznurka</a></li>
                 <li class="nav-item"><a href="/product/wool" class="nav-link link-body-emphasis px-2">Wyroby z
